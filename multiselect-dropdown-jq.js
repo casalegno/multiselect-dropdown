@@ -1,5 +1,6 @@
-function MultiselectDropdown(options){
-  var config={
+
+(function( $ ){ $.fn.msdd= function(options) { 
+     var config={
     search:true,
     height:'15rem',
     placeholder:'select',
@@ -25,10 +26,14 @@ function MultiselectDropdown(options){
   }
 
   
-  document.querySelectorAll("select[multiple]").forEach((el,k)=>{
-    
-    var div=newEl('div',{class:'multiselect-dropdown',style:{width:config.style?.width??el.clientWidth+'px',padding:config.style?.padding??''}});
+  //document.querySelectorAll("select[multiple]").forEach((el,k)=>{
+    this.each((index,el)=>{
+    if(!el.hasAttribute('multiple')){
+        el.setAttribute('multiple','');
+    }
+    let div=newEl('div',{class:'multiselect-dropdown',style:{width:config.style?.width??el.clientWidth+'px',padding:config.style?.padding??''}});
     el.style.display='none';
+    
     el.parentNode.insertBefore(div,el.nextSibling);
     var listWrap=newEl('div',{class:'multiselect-dropdown-list-wrapper'});
     var list=newEl('div',{class:'multiselect-dropdown-list',style:{height:config.height}});
@@ -67,7 +72,7 @@ function MultiselectDropdown(options){
         });
   
         list.appendChild(op);
-      }
+      } // fine del select-all
 
       Array.from(el.options).map(o=>{
         var op=newEl('div',{class:o.selected?'checked':'',optEl:o})
@@ -92,7 +97,7 @@ function MultiselectDropdown(options){
       div.refresh=()=>{
         div.querySelectorAll('span.optext, span.placeholder').forEach(t=>div.removeChild(t));
         var sels=Array.from(el.selectedOptions);
-        if(sels.length>(el.attributes['multiselect-max-items']?.value??5)){
+        if(sels.length>(el.attributes['multiselect-max-items']?.value??10)){
           div.appendChild(newEl('span',{class:['optext','maxselected'],text:sels.length+' '+config.txtSelected}));          
         }
         else{
@@ -129,9 +134,12 @@ function MultiselectDropdown(options){
         div.refresh();
       }
     });    
-  });
-}
+  });   
+     
+    
+}; })( jQuery );
 
-window.addEventListener('load',()=>{
-  MultiselectDropdown(window.MultiselectDropdownOptions);
-});
+
+//window.addEventListener('load',()=>{
+//  MultiselectDropdown(window.MultiselectDropdownOptions);
+//})
